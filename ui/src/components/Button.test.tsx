@@ -2,12 +2,12 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import Button from "./Button";
+import { MyButton } from "./Button";
 
-describe("Button Component", () => {
+describe("MyButton Component", () => {
   it("renders the button with the correct label", () => {
     render(
-      <Button
+      <MyButton
         label="Click Me"
         onClick={() => {}}
       />,
@@ -18,7 +18,7 @@ describe("Button Component", () => {
   it("calls the onClick handler when clicked", async () => {
     const handleClick = vi.fn();
     render(
-      <Button
+      <MyButton
         label="Click Me"
         onClick={handleClick}
       />,

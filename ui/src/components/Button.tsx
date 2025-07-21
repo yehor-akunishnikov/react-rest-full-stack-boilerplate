@@ -1,12 +1,10 @@
-import type { FC } from "react";
+import {Button} from "react-bootstrap";
 
-type ButtonProps = {
+type MyButtonProps = {
   label: string;
   onClick: () => void;
 };
 
-const Button: FC<ButtonProps> = ({ label, onClick }) => {
-  return <button onClick={onClick}>{label}</button>;
-};
-
-export default Button;
+export function MyButton({ label, onClick }: MyButtonProps) {
+  return <Button onClick={onClick}>{label}</Button>;
+}
