@@ -1,4 +1,4 @@
-import { ControllerHandler, HTTP_STATUS_CODE } from "../common/types";
+import { HTTP_STATUS_CODE } from "../common/types";
 
 export interface AppError extends Error {
   status?: number;

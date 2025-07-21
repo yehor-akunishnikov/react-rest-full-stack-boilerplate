@@ -16,7 +16,7 @@ export default defineConfig([
         "error",
         {
           caughtErrors: "none",
-          ignoreRestSiblings: true
+          ignoreRestSiblings: true,
         },
       ],
     },
