@@ -25,3 +25,14 @@ export function omit<T extends object, K extends ObjectKeysList<T>>(
     }),
   ) as Omit<T, K[number]>;
 }
+
+export function setUpdatedAt<T extends Record<string, unknown>>(entity: T): T {
+  return {
+    ...entity,
+    updatedAt: new Date(),
+  };
+}
+
+export function takeFirst<T extends Array<unknown>>(list: T): T[number] {
+  return list[0];
+}

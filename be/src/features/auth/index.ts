@@ -9,7 +9,6 @@ export default setupController([
     [
       async function login(req, res) {
         const payload = loginValidator.parse(req.body);
-
         const token = await userService.login(payload);
 
         if (token) {

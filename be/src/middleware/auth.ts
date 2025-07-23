@@ -19,16 +19,17 @@ export async function authMW(
   next: NextFunction,
 ): Promise<void> {
   const token = (req.header("Authorization") ?? "").split(" ")[1];
+  const authError = new AuthError("Unauthorized");
 
-  if (!token) return next(new AuthError("Unauthorized"));
+  if (!token) return next(authError);
 
   const email = safeDecode<string>(token);
 
-  if (!email) return next(new AuthError("Unauthorized"));
+  if (!email) return next(authError);
 
   const user = await userRepo.findOneByEmail(email);
 
-  if (!user) return next(new AuthError("Unauthorized"));
+  if (!user) return next(authError);
 
   res.locals.userId = user.id;
 
