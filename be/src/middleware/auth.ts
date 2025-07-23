@@ -31,7 +31,9 @@ export async function authMW(
 
   if (!user) return next(authError);
 
-  res.locals.userId = user.id;
+  res.locals.authData = {
+    userId: user.id,
+  };
 
   return next();
 }

@@ -1,3 +1,5 @@
+import { Response } from "express";
+
 type ObjectKeysList<T extends object> = (keyof T)[];
 
 export function pick<T extends object, K extends ObjectKeysList<T>>(
@@ -35,4 +37,8 @@ export function setUpdatedAt<T extends Record<string, unknown>>(entity: T): T {
 
 export function takeFirst<T extends Array<unknown>>(list: T): T[number] {
   return list[0];
+}
+
+export function getAuthData(res: Response) {
+  return res.locals.authData;
 }
