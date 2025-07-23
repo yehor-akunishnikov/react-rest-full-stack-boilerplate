@@ -2,13 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import { z, ZodError } from "zod/v4";
 
 import { AppError, AuthError, DbError, NotFoundError } from "../errors";
-import { HTTP_STATUS_CODE } from "../common/types";
+import { HTTP_STATUS_CODE } from "../types/http";
 
 export function errorHandlerMW(
   err: AppError,
   req: Request,
   res: Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction,
 ): void {
   const status = err.status;

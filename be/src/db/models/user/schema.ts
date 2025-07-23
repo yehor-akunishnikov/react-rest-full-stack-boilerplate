@@ -1,7 +1,5 @@
 import { integer, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
-import { relations, sql } from "drizzle-orm";
-
-import { wordSchema } from "../word/schema";
+import { sql } from "drizzle-orm";
 
 export const userSchema = pgTable("users", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -12,7 +10,3 @@ export const userSchema = pgTable("users", {
     .notNull()
     .default(sql`now()`),
 });
-
-export const userRelations = relations(userSchema, ({ many }) => ({
-  words: many(wordSchema),
-}));

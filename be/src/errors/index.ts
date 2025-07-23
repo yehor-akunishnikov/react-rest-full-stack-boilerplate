@@ -1,4 +1,4 @@
-import { HTTP_STATUS_CODE } from "../common/types";
+import { HTTP_STATUS_CODE } from "../types/http";
 
 export interface AppError extends Error {
   status?: number;

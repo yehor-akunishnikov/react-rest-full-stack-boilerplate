@@ -15,6 +15,7 @@ export default defineConfig([
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
+          args: "none",
           caughtErrors: "none",
           ignoreRestSiblings: true,
         },

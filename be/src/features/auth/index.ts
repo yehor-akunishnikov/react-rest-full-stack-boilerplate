@@ -1,6 +1,6 @@
-import { HTTP_METHOD, HTTP_STATUS_CODE } from "../../common/types";
+import { HTTP_METHOD, HTTP_STATUS_CODE } from "../../types/http";
 import { loginValidator, registerValidator } from "./validators";
-import { setupController } from "../../common/utils";
+import { setupController } from "../../utils/controller";
 import * as userService from "./service";
 
 export default setupController([

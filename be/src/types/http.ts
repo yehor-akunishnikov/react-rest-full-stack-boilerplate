@@ -1,9 +1,3 @@
-import { Handler } from "express";
-
-export type ControllerHandler = [[HTTP_METHOD, string], Handler[]];
-
-export type Controller = ControllerHandler[];
-
 export enum HTTP_STATUS_CODE {
   // 1xx: Informational
   CONTINUE = 100,

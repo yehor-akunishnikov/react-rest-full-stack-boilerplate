@@ -1,5 +1,5 @@
-import { HTTP_METHOD, HTTP_STATUS_CODE } from "../../common/types";
-import { setupController } from "../../common/utils";
+import { HTTP_METHOD, HTTP_STATUS_CODE } from "../../types/http";
+import { setupController } from "../../utils/controller";
 import { authMW } from "../../middleware/auth";
 import { currentUserDto } from "./dto";
 import * as userRepo from "./repo";

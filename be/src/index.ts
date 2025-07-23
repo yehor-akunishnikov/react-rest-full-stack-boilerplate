@@ -4,7 +4,6 @@ import express from "express";
 import path from "node:path";
 
 import { errorHandlerMW } from "./middleware/errorHandler";
-import wordsRouter from "./features/word";
 import authRouter from "./features/auth";
 import userRouter from "./features/user";
 import config from "./config";
@@ -15,7 +14,6 @@ app.use(express.json());
 
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
-app.use("/api/words", wordsRouter);
 
 app.use(express.static(path.join(process.cwd(), "assets")));
 
