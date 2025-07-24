@@ -41,8 +41,8 @@ export async function update(
   return entity;
 }
 
-export async function remove(id: string): Promise<void> {
-  const entity = await projectRepo.remove(Number(id));
+export async function remove(id: number): Promise<void> {
+  const entity = await projectRepo.remove(id);
 
   if (!entity) {
     throw new NotFoundError(`Project with id: ${id} not found`);

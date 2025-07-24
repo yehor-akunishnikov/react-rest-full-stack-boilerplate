@@ -61,7 +61,7 @@ export default setupController([
     [
       authMW,
       async function remove(req, res) {
-        await projectService.remove(req.params.id);
+        await projectService.remove(Number(req.params.id));
 
         res
           .status(HTTP_STATUS_CODE.OK)
