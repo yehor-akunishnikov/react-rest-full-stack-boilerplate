@@ -1,4 +1,8 @@
-import { createRoleValidator, updateRoleValidator } from "./validators";
+import {
+  assignPermissionsValidator,
+  createRoleValidator,
+  updateRoleValidator,
+} from "./validators";
 import { HTTP_METHOD, HTTP_STATUS_CODE } from "../../types/http";
 import { setupController } from "../../utils/controller";
 import { authMW } from "../../middleware/auth";
@@ -76,13 +80,15 @@ export default setupController([
     ],
   ],
   [
-    [HTTP_METHOD.PUT, "/:roleId/:permissionId"],
+    [HTTP_METHOD.POST, "/:roleId/assign"],
     [
       authMW,
-      async function assignPermission(req, res) {
-        await roleService.assignPermission(
+      async function assignPermissions(req, res) {
+        const payload = assignPermissionsValidator.parse(req.body);
+
+        await roleService.assignPermissions(
           Number(req.params.roleId),
-          Number(req.params.permissionId),
+          payload.ids,
         );
 
         res
@@ -92,13 +98,15 @@ export default setupController([
     ],
   ],
   [
-    [HTTP_METHOD.DELETE, "/:roleId/:permissionId"],
+    [HTTP_METHOD.POST, "/:roleId/revoke"],
     [
       authMW,
-      async function revokePermission(req, res) {
-        await roleService.revokePermission(
+      async function revokePermissions(req, res) {
+        const payload = assignPermissionsValidator.parse(req.body);
+
+        await roleService.revokePermissions(
           Number(req.params.roleId),
-          Number(req.params.permissionId),
+          payload.ids,
         );
 
         res

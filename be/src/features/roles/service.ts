@@ -4,12 +4,13 @@ import { setUpdatedAt } from "../../utils/common";
 import { NotFoundError } from "../../errors";
 import * as roleRepo from "./repo";
 import type { RolesToPermissionsSelect } from "../../db/references/types";
+import type { PermissionSelect } from "../../db/models/permission/types";
 
 export function getAll(): Promise<RoleSelect[]> {
   return roleRepo.findAll();
 }
 
-export function getPermissions(id: number): Promise<string[]> {
+export function getPermissions(id: number): Promise<PermissionSelect[]> {
   return roleRepo.findPermissions(id);
 }
 
@@ -48,16 +49,16 @@ export async function remove(id: number): Promise<void> {
   return;
 }
 
-export async function assignPermission(
+export async function assignPermissions(
   roleId: number,
-  permissionId: number,
+  permissionIds: number[],
 ): Promise<void> {
-  return roleRepo.assignPermission(roleId, permissionId);
+  return roleRepo.assignPermissions(roleId, permissionIds);
 }
 
-export async function revokePermission(
+export async function revokePermissions(
   roleId: number,
-  permissionId: number,
+  permissionIds: number[],
 ): Promise<RolesToPermissionsSelect> {
-  return roleRepo.revokePermission(roleId, permissionId);
+  return roleRepo.revokePermissions(roleId, permissionIds);
 }

@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 
 import type { RolesToPermissionsSelect } from "../../db/references/types";
 import type { RoleInsert, RoleSelect } from "../../db/models/role/types";
@@ -7,6 +7,7 @@ import { roleSchema } from "../../db/models/schema";
 import { takeFirst } from "../../utils/common";
 import { DbInsertError } from "../../errors";
 import { db } from "../../db";
+import type { PermissionSelect } from "../../db/models/permission/types";
 
 export async function create(payload: RoleInsert): Promise<RoleSelect> {
   try {
@@ -24,7 +25,7 @@ export async function findAll(): Promise<RoleSelect[]> {
   return db.select().from(roleSchema);
 }
 
-export async function findPermissions(id: number): Promise<string[]> {
+export async function findPermissions(id: number): Promise<PermissionSelect[]> {
   return db.query.roleSchema
     .findFirst({
       where: eq(roleSchema.id, id),
@@ -37,7 +38,7 @@ export async function findPermissions(id: number): Promise<string[]> {
       },
     })
     .then((role) =>
-      (role?.rolesToPermissions ?? []).map(({ permission }) => permission.name),
+      (role?.rolesToPermissions ?? []).map(({ permission }) => permission),
     );
 }
 
@@ -73,26 +74,26 @@ export async function remove(id: number): Promise<{ id: RoleSelect["id"] }> {
     .then(takeFirst);
 }
 
-export async function assignPermission(
+export async function assignPermissions(
   roleId: number,
-  permissionId: number,
+  permissionIds: number[],
 ): Promise<void> {
   await db
     .insert(rolesToPermissionsSchema)
-    .values({ roleId, permissionId })
+    .values(permissionIds.map((permissionId) => ({ roleId, permissionId })))
     .onConflictDoNothing();
 }
 
-export async function revokePermission(
+export async function revokePermissions(
   roleId: number,
-  permissionId: number,
+  permissionIds: number[],
 ): Promise<RolesToPermissionsSelect> {
   return db
     .delete(rolesToPermissionsSchema)
     .where(
       and(
         eq(rolesToPermissionsSchema.roleId, roleId),
-        eq(rolesToPermissionsSchema.permissionId, permissionId),
+        inArray(rolesToPermissionsSchema.permissionId, permissionIds),
       ),
     )
     .returning()

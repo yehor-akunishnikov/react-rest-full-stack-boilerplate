@@ -11,3 +11,19 @@ export const updateRoleValidator = z.object({
 });
 
 export type UpdateRolePayload = z.infer<typeof updateRoleValidator>;
+
+export const assignPermissionsValidator = z.strictObject({
+  ids: z.array(z.number()).min(1),
+});
+
+export type AssignPermissionsPayload = z.infer<
+  typeof assignPermissionsValidator
+>;
+
+export const revokePermissionsValidator = z.strictObject({
+  ids: z.array(z.number()).min(1),
+});
+
+export type RevokePermissionsPayload = z.infer<
+  typeof revokePermissionsValidator
+>;
