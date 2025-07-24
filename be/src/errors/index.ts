@@ -40,3 +40,12 @@ export class NotFoundError extends Error implements AppError {
     super(message);
   }
 }
+
+export class ForbiddenError extends Error implements AppError {
+  public readonly errorName = "ForbiddenError";
+  public readonly status: HTTP_STATUS_CODE.FORBIDDEN;
+
+  constructor(message: string) {
+    super(message);
+  }
+}
