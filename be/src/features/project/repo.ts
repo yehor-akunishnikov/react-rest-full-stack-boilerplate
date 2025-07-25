@@ -1,5 +1,6 @@
 import { eq, ilike } from "drizzle-orm";
 
+import { userToProjectSchema } from "../../db/references/schema";
 import { projectSchema } from "../../db/models/schema";
 import { takeFirst } from "../../utils/common";
 import { DbInsertError } from "../../errors";
@@ -9,13 +10,24 @@ import type {
   ProjectSelect,
 } from "../../db/models/project/types";
 
-export async function create(payload: ProjectInsert): Promise<ProjectSelect> {
+export async function create(
+  userId: number,
+  payload: ProjectInsert,
+): Promise<ProjectSelect> {
   try {
-    return await db
-      .insert(projectSchema)
-      .values(payload)
-      .returning()
-      .then(takeFirst);
+    return db.transaction(async () => {
+      const project = await db
+        .insert(projectSchema)
+        .values(payload)
+        .returning()
+        .then(takeFirst);
+
+      await db
+        .insert(userToProjectSchema)
+        .values({ userId, projectId: project.id, memberKind: "ADMIN" });
+
+      return project;
+    });
   } catch (e) {
     throw new DbInsertError("Failed to create project", e);
   }
@@ -45,7 +57,7 @@ export async function findOne<K extends keyof ProjectSelect>(
 }
 
 export async function update(
-  id: number,
+  id: string,
   payload: Partial<ProjectSelect>,
 ): Promise<ProjectSelect> {
   return db
@@ -56,7 +68,7 @@ export async function update(
     .then(takeFirst);
 }
 
-export async function remove(id: number): Promise<{ id: ProjectSelect["id"] }> {
+export async function remove(id: string): Promise<{ id: ProjectSelect["id"] }> {
   return db
     .delete(projectSchema)
     .where(eq(projectSchema.id, id))

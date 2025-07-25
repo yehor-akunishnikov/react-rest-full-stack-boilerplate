@@ -16,23 +16,24 @@ export function getAll(
 
 export async function getById(id: string): Promise<ProjectSelect> {
   try {
-    return await projectRepo.findOne("id", Number(id));
+    return await projectRepo.findOne("id", id);
   } catch (e) {
     throw new NotFoundError(`Project with id: ${id} not found`);
   }
 }
 
 export async function create(
+  userId: number,
   payload: CreateProjectPayload,
 ): Promise<ProjectSelect> {
-  return projectRepo.create(payload);
+  return projectRepo.create(userId, payload);
 }
 
 export async function update(
   id: string,
   payload: UpdateProjectPayload,
 ): Promise<ProjectSelect> {
-  const entity = await projectRepo.update(Number(id), setUpdatedAt(payload));
+  const entity = await projectRepo.update(id, setUpdatedAt(payload));
 
   if (!entity) {
     throw new NotFoundError(`Project with id: ${id} not found`);
@@ -41,7 +42,7 @@ export async function update(
   return entity;
 }
 
-export async function remove(id: number): Promise<void> {
+export async function remove(id: string): Promise<void> {
   const entity = await projectRepo.remove(id);
 
   if (!entity) {

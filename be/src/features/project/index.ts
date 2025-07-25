@@ -1,5 +1,6 @@
 import { HTTP_METHOD, HTTP_STATUS_CODE } from "../../types/http";
 import { setupController } from "../../utils/controller";
+import { getAuthData } from "../../utils/common";
 import { authMW } from "../../middleware/auth";
 import * as projectService from "./service";
 import {
@@ -15,7 +16,10 @@ export default setupController([
       authMW,
       async function create(req, res) {
         const payload = createProjectValidator.parse(req.body);
-        const result = await projectService.create(payload);
+        const result = await projectService.create(
+          getAuthData(res).userId,
+          payload,
+        );
 
         res.status(HTTP_STATUS_CODE.CREATED).json(result);
       },
@@ -61,7 +65,7 @@ export default setupController([
     [
       authMW,
       async function remove(req, res) {
-        await projectService.remove(Number(req.params.id));
+        await projectService.remove(req.params.id);
 
         res
           .status(HTTP_STATUS_CODE.OK)
