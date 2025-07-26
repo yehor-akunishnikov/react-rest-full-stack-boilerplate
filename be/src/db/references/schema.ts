@@ -1,25 +1,19 @@
-import {
-  integer,
-  pgEnum,
-  pgTable,
-  primaryKey,
-  uuid,
-} from "drizzle-orm/pg-core";
+import { pgEnum, pgTable, primaryKey, uuid } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 import { projectSchema } from "../models/project/schema";
 import { userSchema } from "../models/user/schema";
 
-const memberKindEnum = pgEnum("member_kind", ["ADMIN", "COMMON"]);
+export const memberKindEnum = pgEnum("member_kind", ["ADMIN", "COMMON"]);
 
 export const userToProjectSchema = pgTable(
-  "user_to_projects",
+  "users_to_projects",
   {
-    userId: integer("user_id")
+    userId: uuid("user_id")
       .notNull()
       .references(() => userSchema.id, { onDelete: "cascade" })
       .notNull(),
-    projectId: uuid()
+    projectId: uuid("project_id")
       .notNull()
       .references(() => projectSchema.id, { onDelete: "cascade" })
       .notNull(),

@@ -1,7 +1,10 @@
+import { randomBytes } from "node:crypto";
+
 import type { ProjectSelect } from "../../db/models/project/types";
 import { setUpdatedAt } from "../../utils/common";
 import { NotFoundError } from "../../errors";
 import * as projectRepo from "./repo";
+import config from "../../config";
 import type {
   CreateProjectPayload,
   ProjectGetAllQueryParams,
@@ -23,7 +26,7 @@ export async function getById(id: string): Promise<ProjectSelect> {
 }
 
 export async function create(
-  userId: number,
+  userId: string,
   payload: CreateProjectPayload,
 ): Promise<ProjectSelect> {
   return projectRepo.create(userId, payload);
@@ -50,4 +53,23 @@ export async function remove(id: string): Promise<void> {
   }
 
   return;
+}
+
+export async function createInvite(
+  projectId: string,
+  userId: string,
+): Promise<string> {
+  const token = randomBytes(32).toString("hex");
+  const expiresAt = new Date();
+
+  expiresAt.setDate(expiresAt.getDate() + 1);
+
+  const entity = await projectRepo.createInvite(
+    projectId,
+    userId,
+    token,
+    expiresAt,
+  );
+
+  return `${config.uiHost}/invite/${entity.token}`;
 }

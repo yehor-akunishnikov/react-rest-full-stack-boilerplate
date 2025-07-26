@@ -14,6 +14,9 @@ class Config {
 
   /* Auth */
   public readonly authSecret: string = process.env.AUTH_SECRET!;
+
+  /* UI */
+  public readonly uiHost: string = process.env.UI_HOST!;
 }
 
 export default new Config();

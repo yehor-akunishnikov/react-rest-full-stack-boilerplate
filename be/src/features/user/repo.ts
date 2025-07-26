@@ -1,11 +1,11 @@
 import { eq } from "drizzle-orm";
 
-import { UserSelect } from "../../db/models/user/types";
 import { userSchema } from "../../db/models/schema";
+import { UserSelect } from "../../db/models/types";
 import { NotFoundError } from "../../errors";
 import { db } from "../../db";
 
-export async function findById(id: number): Promise<UserSelect> {
+export async function findById(id: string): Promise<UserSelect> {
   const result = await db
     .select()
     .from(userSchema)

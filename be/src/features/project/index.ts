@@ -73,4 +73,18 @@ export default setupController([
       },
     ],
   ],
+  [
+    [HTTP_METHOD.GET, "/:id/invite"],
+    [
+      authMW,
+      async function createInvite(req, res) {
+        const inviteUrl = await projectService.createInvite(
+          req.params.id,
+          getAuthData(res).userId,
+        );
+
+        res.status(HTTP_STATUS_CODE.OK).json({ inviteUrl });
+      },
+    ],
+  ],
 ]);

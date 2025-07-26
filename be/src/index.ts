@@ -5,6 +5,7 @@ import path from "node:path";
 
 import { errorHandlerMW } from "./middleware/errorHandler";
 import projectRouter from "./features/project";
+import inviteRouter from "./features/invite";
 import authRouter from "./features/auth";
 import userRouter from "./features/user";
 import config from "./config";
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/projects", projectRouter);
+app.use("/api/invites", inviteRouter);
 
 app.use(express.static(path.join(process.cwd(), "assets")));
 

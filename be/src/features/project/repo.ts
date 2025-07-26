@@ -1,36 +1,32 @@
 import { eq, ilike } from "drizzle-orm";
 
-import { userToProjectSchema } from "../../db/references/schema";
-import { projectSchema } from "../../db/models/schema";
-import { takeFirst } from "../../utils/common";
-import { DbInsertError } from "../../errors";
-import { db } from "../../db";
 import type {
+  InviteSelect,
   ProjectInsert,
   ProjectSelect,
-} from "../../db/models/project/types";
+} from "../../db/models/types";
+import { inviteSchema, projectSchema } from "../../db/models/schema";
+import { userToProjectSchema } from "../../db/references/schema";
+import { takeFirst } from "../../utils/common";
+import { db } from "../../db";
 
 export async function create(
-  userId: number,
+  userId: string,
   payload: ProjectInsert,
 ): Promise<ProjectSelect> {
-  try {
-    return db.transaction(async () => {
-      const project = await db
-        .insert(projectSchema)
-        .values(payload)
-        .returning()
-        .then(takeFirst);
+  return db.transaction(async () => {
+    const project = await db
+      .insert(projectSchema)
+      .values(payload)
+      .returning()
+      .then(takeFirst);
 
-      await db
-        .insert(userToProjectSchema)
-        .values({ userId, projectId: project.id, memberKind: "ADMIN" });
+    await db
+      .insert(userToProjectSchema)
+      .values({ userId, projectId: project.id, memberKind: "ADMIN" });
 
-      return project;
-    });
-  } catch (e) {
-    throw new DbInsertError("Failed to create project", e);
-  }
+    return project;
+  });
 }
 
 export async function findAll(
@@ -73,5 +69,23 @@ export async function remove(id: string): Promise<{ id: ProjectSelect["id"] }> {
     .delete(projectSchema)
     .where(eq(projectSchema.id, id))
     .returning({ id: projectSchema.id })
+    .then(takeFirst);
+}
+
+export async function createInvite(
+  projectId: string,
+  userId: string,
+  token: string,
+  expiresAt: Date,
+): Promise<InviteSelect> {
+  return db
+    .insert(inviteSchema)
+    .values({
+      inviterId: userId,
+      projectId,
+      token,
+      expiresAt,
+    })
+    .returning()
     .then(takeFirst);
 }
