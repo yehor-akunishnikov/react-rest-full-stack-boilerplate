@@ -1,8 +1,9 @@
 import { pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
-import { userToProjectSchema } from "../../references/schema";
+import { membershipSchema } from "../../references/schema";
 import { inviteSchema } from "../invite/schema";
+import { taskSchema } from "../task/schema";
 
 export const userSchema = pgTable("users", {
   id: uuid().notNull().defaultRandom().primaryKey(),
@@ -13,6 +14,7 @@ export const userSchema = pgTable("users", {
 });
 
 export const userRelations = relations(userSchema, ({ many }) => ({
-  usersToProjects: many(userToProjectSchema),
-  inviterToInvites: many(inviteSchema),
+  project: many(membershipSchema),
+  invite: many(inviteSchema),
+  tasks: many(taskSchema),
 }));

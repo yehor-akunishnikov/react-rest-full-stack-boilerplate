@@ -8,8 +8,8 @@ export const createProjectValidator = z.strictObject({
 export type CreateProjectPayload = z.infer<typeof createProjectValidator>;
 
 export const updateProjectValidator = z.strictObject({
-  name: z.string().nonempty().max(255),
-  description: z.string().nonempty().max(510),
+  name: z.string().nonempty().max(255).optional(),
+  description: z.string().nonempty().max(510).optional(),
 });
 
 export type UpdateProjectPayload = z.infer<typeof updateProjectValidator>;

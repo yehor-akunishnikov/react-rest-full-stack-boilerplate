@@ -1,8 +1,7 @@
 import { randomBytes } from "node:crypto";
 
 import type { ProjectSelect } from "../../db/models/project/types";
-import { ForbiddenError, NotFoundError } from "../../errors";
-import { getMemberKind } from "../../shared/repo";
+import { NotFoundError } from "../../errors";
 import { setUpdatedAt } from "../../utils/common";
 import * as projectRepo from "./repo";
 import config from "../../config";
@@ -19,11 +18,8 @@ export function getAll(
   return projectRepo.findAll(userId, query.search, query.limit);
 }
 
-export async function getById(
-  userId: string,
-  id: string,
-): Promise<ProjectSelect> {
-  const entity = await projectRepo.findOne(userId, "id", id);
+export async function getById(id: string): Promise<ProjectSelect> {
+  const entity = await projectRepo.findOne("id", id);
 
   if (!entity) {
     throw new NotFoundError(`Project with id: ${id} not found`);
@@ -40,62 +36,31 @@ export async function create(
 }
 
 export async function update(
-  userId: string,
   id: string,
   payload: UpdateProjectPayload,
 ): Promise<ProjectSelect> {
-  const kind = await getMemberKind(userId, id);
-
-  if (kind === "ADMIN") {
-    const entity = await projectRepo.update(id, setUpdatedAt(payload));
-
-    if (!entity) {
-      throw new NotFoundError(`Project with id: ${id} not found`);
-    }
-
-    return entity;
-  }
-
-  throw new ForbiddenError("You are not allowed to update project");
+  return projectRepo.update(id, setUpdatedAt(payload));
 }
 
-export async function remove(userId: string, id: string): Promise<void> {
-  const kind = await getMemberKind(userId, id);
-
-  if (kind === "ADMIN") {
-    const entity = await projectRepo.remove(id);
-
-    if (!entity) {
-      throw new NotFoundError(`Project with id: ${id} not found`);
-    }
-
-    return;
-  }
-
-  throw new ForbiddenError("You are not allowed to delete project");
+export async function remove(id: string): Promise<void> {
+  await projectRepo.remove(id);
 }
 
 export async function createInvite(
   projectId: string,
   userId: string,
 ): Promise<string> {
-  const kind = await getMemberKind(userId, projectId);
+  const token = randomBytes(32).toString("hex");
+  const expiresAt = new Date();
 
-  if (kind === "ADMIN") {
-    const token = randomBytes(32).toString("hex");
-    const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + 1);
 
-    expiresAt.setDate(expiresAt.getDate() + 1);
+  const entity = await projectRepo.createInvite(
+    projectId,
+    userId,
+    token,
+    expiresAt,
+  );
 
-    const entity = await projectRepo.createInvite(
-      projectId,
-      userId,
-      token,
-      expiresAt,
-    );
-
-    return `${config.uiHost}/invite/${entity.token}`;
-  }
-
-  throw new ForbiddenError("You are not allowed to create invite");
+  return `${config.uiHost}/invite/${entity.token}`;
 }

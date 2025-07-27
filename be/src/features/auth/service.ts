@@ -9,7 +9,7 @@ import config from "../../config";
 export async function register(payload: RegisterPayload): Promise<void> {
   const password = await bcrypt.hash(payload.password, 10);
 
-  await authRepo.insert({
+  await authRepo.register({
     ...payload,
     password,
   });

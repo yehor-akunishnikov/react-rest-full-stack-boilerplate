@@ -1,4 +1,4 @@
-import { userToProjectSchema } from "./schema";
+import { membershipSchema } from "./schema";
 
-export type UserToProjectSelect = typeof userToProjectSchema.$inferSelect;
-export type UserToProjectInsert = typeof userToProjectSchema.$inferInsert;
+export type UserToProjectSelect = typeof membershipSchema.$inferSelect;
+export type UserToProjectInsert = typeof membershipSchema.$inferInsert;

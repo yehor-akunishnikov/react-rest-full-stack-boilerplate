@@ -12,7 +12,7 @@ export function setupController(
   controller: Controller,
   options?: SetupControllerOptions,
 ): Router {
-  const router = Router();
+  const router = Router({ mergeParams: true });
 
   router.use("/", (req, res, next) => {
     console.log(`Request at: [${req.originalUrl}]`);

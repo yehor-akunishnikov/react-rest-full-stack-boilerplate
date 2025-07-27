@@ -1,20 +1,11 @@
 import { eq } from "drizzle-orm";
 
-import type { UserToProjectSelect } from "../../db/references/types";
-import { userToProjectSchema } from "../../db/references/schema";
-import type { InviteSelect } from "../../db/models/types";
+import { membershipSchema } from "../../db/references/schema";
 import { inviteSchema } from "../../db/models/schema";
 import { takeFirst } from "../../utils/common";
 import { db } from "../../db";
 
-type FindByTokenRelations = {
-  project: { name: string };
-  inviter: { name: string };
-};
-
-export function findByToken(
-  token: string,
-): Promise<(InviteSelect & FindByTokenRelations) | undefined> {
+export function findByToken(token: string) {
   return db.query.inviteSchema.findFirst({
     where: eq(inviteSchema.token, token),
     with: {
@@ -24,10 +15,7 @@ export function findByToken(
   });
 }
 
-export async function acceptInvite(
-  userId: string,
-  inviteId: string,
-): Promise<UserToProjectSelect> {
+export async function acceptInvite(userId: string, inviteId: string) {
   return db.transaction(async (tx) => {
     const invite = await tx
       .select()
@@ -39,7 +27,7 @@ export async function acceptInvite(
     await tx.update(inviteSchema).set({ status: "ACCEPTED" });
 
     return db
-      .insert(userToProjectSchema)
+      .insert(membershipSchema)
       .values({
         userId,
         projectId: invite.projectId,
