@@ -1,19 +1,12 @@
 import { eq, ilike } from "drizzle-orm";
 
-import type {
-  InviteSelect,
-  ProjectInsert,
-  ProjectSelect,
-} from "../../db/models/types";
+import type { ProjectInsert, ProjectSelect } from "../../db/models/types";
 import { inviteSchema, projectSchema } from "../../db/models/schema";
 import { userToProjectSchema } from "../../db/references/schema";
 import { takeFirst } from "../../utils/common";
 import { db } from "../../db";
 
-export async function create(
-  userId: string,
-  payload: ProjectInsert,
-): Promise<ProjectSelect> {
+export async function create(userId: string, payload: ProjectInsert) {
   return db.transaction(async () => {
     const project = await db
       .insert(projectSchema)
@@ -29,33 +22,36 @@ export async function create(
   });
 }
 
-export async function findAll(
-  search: string = "",
-  limit = 10,
-): Promise<ProjectSelect[]> {
-  return db
-    .select()
-    .from(projectSchema)
-    .where(ilike(projectSchema.name, `%${search}%`))
-    .limit(limit);
+export async function findAll(userId: string, search: string = "", limit = 10) {
+  return db.query.projectSchema.findMany({
+    where: ilike(projectSchema.name, `%${search}%`),
+    with: {
+      projectsToUsers: {
+        where: eq(userToProjectSchema.userId, userId),
+        columns: { userId: true },
+      },
+    },
+    limit,
+  });
 }
 
 export async function findOne<K extends keyof ProjectSelect>(
+  userId: string,
   key: K,
   value: ProjectSelect[K],
-): Promise<ProjectSelect> {
-  return db
-    .select()
-    .from(projectSchema)
-    .where(eq(projectSchema[key], value))
-    .limit(1)
-    .then(takeFirst);
+) {
+  return db.query.projectSchema.findFirst({
+    where: eq(projectSchema[key], value),
+    with: {
+      projectsToUsers: {
+        where: eq(userToProjectSchema.userId, userId),
+        columns: { userId: true },
+      },
+    },
+  });
 }
 
-export async function update(
-  id: string,
-  payload: Partial<ProjectSelect>,
-): Promise<ProjectSelect> {
+export async function update(id: string, payload: Partial<ProjectSelect>) {
   return db
     .update(projectSchema)
     .set(payload)
@@ -64,7 +60,7 @@ export async function update(
     .then(takeFirst);
 }
 
-export async function remove(id: string): Promise<{ id: ProjectSelect["id"] }> {
+export async function remove(id: string) {
   return db
     .delete(projectSchema)
     .where(eq(projectSchema.id, id))
@@ -77,7 +73,7 @@ export async function createInvite(
   userId: string,
   token: string,
   expiresAt: Date,
-): Promise<InviteSelect> {
+) {
   return db
     .insert(inviteSchema)
     .values({

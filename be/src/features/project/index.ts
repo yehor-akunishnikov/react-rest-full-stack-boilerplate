@@ -31,7 +31,10 @@ export default setupController([
       authMW,
       async function getAll(req, res) {
         const query = projectGetAllQueryParamsValidator.parse(req.query);
-        const result = await projectService.getAll(query);
+        const result = await projectService.getAll(
+          getAuthData(res).userId,
+          query,
+        );
 
         res.status(HTTP_STATUS_CODE.OK).json(result);
       },
@@ -42,7 +45,10 @@ export default setupController([
     [
       authMW,
       async function getById(req, res) {
-        const result = await projectService.getById(req.params.id);
+        const result = await projectService.getById(
+          getAuthData(res).userId,
+          req.params.id,
+        );
 
         res.status(HTTP_STATUS_CODE.OK).json(result);
       },
@@ -54,7 +60,11 @@ export default setupController([
       authMW,
       async function update(req, res) {
         const payload = updateProjectValidator.parse(req.body);
-        const result = await projectService.update(req.params.id, payload);
+        const result = await projectService.update(
+          getAuthData(res).userId,
+          req.params.id,
+          payload,
+        );
 
         res.status(HTTP_STATUS_CODE.OK).json(result);
       },
@@ -65,7 +75,7 @@ export default setupController([
     [
       authMW,
       async function remove(req, res) {
-        await projectService.remove(req.params.id);
+        await projectService.remove(getAuthData(res).userId, req.params.id);
 
         res
           .status(HTTP_STATUS_CODE.OK)
