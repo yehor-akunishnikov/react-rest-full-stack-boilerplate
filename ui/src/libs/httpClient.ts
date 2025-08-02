@@ -21,7 +21,7 @@ httpClient.interceptors.request.use((config) => {
 httpClient.interceptors.response.use(
   (response) => response,
   (e: AxiosError) => {
-    if (e.status === 401) {
+    if (e.status === 401 && !e.config?.url?.includes("/auth")) {
       localStorage.removeItem(AUTH_TOKEN_KEY);
       window.location.href = "/auth";
     }

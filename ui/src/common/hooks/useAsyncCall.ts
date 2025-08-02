@@ -10,29 +10,41 @@ export type UseHttpCallOutput<D> = {
   callApi: (cb: AsyncApiCallback<D>) => Promise<void>;
 };
 
+type AsyncCallState<D> = {
+  isLoading: boolean;
+  error: AxiosError | null;
+  data: D | null;
+};
+
 export function useAsyncCall<D>(): UseHttpCallOutput<D> {
-  const [error, setError] = useState<AxiosError | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [data, setData] = useState<D | null>(null);
+  const [state, setState] = useState<AsyncCallState<D>>({
+    isLoading: false,
+    error: null,
+    data: null,
+  });
 
   const callApi = useCallback(async (cb: AsyncApiCallback<D>): Promise<void> => {
     try {
-      setIsLoading(true);
+      setState((state) => ({ ...state, isLoading: true }));
 
       const response = await cb();
 
-      setData(response);
-      setIsLoading(false);
+      setState((state) => ({
+        ...state,
+        data: response,
+        isLoading: false,
+      }));
     } catch (e) {
-      setError(e as AxiosError);
-      setIsLoading(false);
+      setState((state) => ({
+        ...state,
+        error: e as AxiosError,
+        isLoading: false,
+      }));
     }
   }, []);
 
   return {
-    isLoading,
-    error,
-    data,
+    ...state,
     callApi,
   };
 }
