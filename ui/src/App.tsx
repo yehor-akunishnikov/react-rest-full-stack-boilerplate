@@ -1,17 +1,16 @@
-import { useState } from "react";
+import { RouterProvider } from "react-router";
+import { Provider } from "react-redux";
 
+import { store } from "./data/store";
+import router from "./router";
 import "./App.css";
-import { MyButton } from "./components/Button";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
-      <MyButton
-        label={String(count)}
-        onClick={() => setCount(count + 1)}
-      />
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
     </>
   );
 }
