@@ -1,7 +1,8 @@
-import { UserSelect } from "../../db/models/user/types";
-import { omit } from "../../utils/common";
+import { omit } from "../../utils";
 
-export function currentUserDto(user: UserSelect) {
+import type { User } from "./models";
+
+export function currentUserDto(user: User) {
   return omit(user, ["password"]);
 }
 

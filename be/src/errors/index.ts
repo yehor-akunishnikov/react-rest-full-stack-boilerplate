@@ -1,51 +1,10 @@
-import { HTTP_STATUS_CODE } from "../types/http";
+import type { HTTP_STATUS_CODE } from "../types";
 
-export interface AppError extends Error {
-  status?: number;
-  errorName?: string;
-}
-
-export abstract class DbError extends Error implements AppError {
-  public readonly originalErrorInstance: unknown;
-  public readonly errorName: string;
-  public readonly status?: HTTP_STATUS_CODE;
-}
-
-export class DbInsertError extends DbError {
-  public readonly errorName = "DbInsertError";
+export class AppError implements Error {
+  readonly name = "APP ERROR";
 
   constructor(
-    message: string,
-    public readonly originalErrorInstance: unknown,
-    public readonly status?: HTTP_STATUS_CODE,
-  ) {
-    super(message);
-  }
-}
-
-export class AuthError extends Error implements AppError {
-  public readonly errorName = "AuthError";
-  public readonly status: HTTP_STATUS_CODE.UNAUTHORIZED;
-
-  constructor(message: string) {
-    super(message);
-  }
-}
-
-export class NotFoundError extends Error implements AppError {
-  public readonly errorName = "NotFoundError";
-  public readonly status: HTTP_STATUS_CODE.NOT_FOUND;
-
-  constructor(message: string) {
-    super(message);
-  }
-}
-
-export class ForbiddenError extends Error implements AppError {
-  public readonly errorName = "ForbiddenError";
-  public readonly status: HTTP_STATUS_CODE.FORBIDDEN;
-
-  constructor(message: string) {
-    super(message);
-  }
+    readonly message: string,
+    readonly status: HTTP_STATUS_CODE,
+  ) {}
 }

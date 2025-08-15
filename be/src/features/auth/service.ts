@@ -1,22 +1,28 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
-import { LoginPayload, RegisterPayload } from "./validators";
-import * as userRepo from "../user/repo";
-import * as authRepo from "./repo";
+import { getUserRepo } from "../user";
 import config from "../../config";
 
-export async function register(payload: RegisterPayload): Promise<void> {
+import { LoginPayload, RegisterPayload } from "./validators";
+
+async function register(payload: RegisterPayload): Promise<void> {
+  const userRepo = getUserRepo();
+
   const password = await bcrypt.hash(payload.password, 10);
 
-  await authRepo.register({
+  const user = userRepo.create({
     ...payload,
     password,
   });
+
+  await userRepo.save(user);
 }
 
-export async function login(payload: LoginPayload): Promise<string | null> {
-  const user = await userRepo.findOneByEmail(payload.email);
+async function login(payload: LoginPayload): Promise<string | null> {
+  const userRepo = getUserRepo();
+
+  const user = await userRepo.findOneBy({ email: payload.email });
   if (!user) return null;
 
   const isPasswordMatch = await bcrypt.compare(payload.password, user.password);
@@ -30,3 +36,8 @@ export async function login(payload: LoginPayload): Promise<string | null> {
     { expiresIn: "1h" },
   );
 }
+
+export const authService = {
+  register,
+  login,
+};
