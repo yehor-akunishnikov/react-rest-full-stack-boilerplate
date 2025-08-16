@@ -1,12 +1,11 @@
-import { DataSource } from "typeorm";
+import { drizzle } from "drizzle-orm/node-postgres";
 
-import { User } from "../features/user";
+import * as userSchema from "../features/user/models";
+
 import config from "../config";
 
-export const AppDataSource = new DataSource({
-  type: "postgres",
-  url: config.dbUrl,
-  synchronize: true,
-  logging: true,
-  entities: [User],
+export const db = drizzle(config.dbUrl, {
+  schema: {
+    ...userSchema,
+  },
 });

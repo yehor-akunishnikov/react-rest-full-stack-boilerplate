@@ -1,31 +1,9 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  Repository,
-} from "typeorm";
+import { integer, pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
 
-import { AppDataSource } from "../../db";
-
-@Entity()
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ unique: true })
-  name: string;
-
-  @Column()
-  password: string;
-
-  @Column({ unique: true })
-  email: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
-}
-
-export function getUserRepo(): Repository<User> {
-  return AppDataSource.getRepository(User);
-}
+export const User = pgTable("users", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar({ length: 255 }).notNull().unique(),
+  password: varchar({ length: 255 }).notNull(),
+  email: varchar({ length: 255 }).notNull().unique(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});

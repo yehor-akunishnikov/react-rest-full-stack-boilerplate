@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-import { HTTP_STATUS_CODE } from "../../types";
-import { AppError } from "../../errors";
-import { userService } from "../user";
-import config from "../../config";
+import { HTTP_STATUS_CODE } from "../types";
+import { userRepo } from "../features/user";
+import { AppError } from "../errors";
+import config from "../config";
 
 function safeDecode<D>(token: string): D | null {
   try {
@@ -36,7 +36,7 @@ export function authMW(): (
 
     if (!email) return next(authError);
 
-    const user = await userService.findOneByEmail(email);
+    const user = await userRepo.findOneByKey("email", email);
 
     if (!user) return next(authError);
 

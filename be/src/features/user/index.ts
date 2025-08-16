@@ -1,3 +1,4 @@
 export * from "./controller";
-export * from "./service";
 export * from "./models";
+export * from "./types";
+export * from "./repo";

@@ -1,10 +1,9 @@
 import { HTTP_METHOD, HTTP_STATUS_CODE } from "../../types";
 import { getAuthData, setupController } from "../../utils";
+import { authMW } from "../../middleware/auth";
 import { AppError } from "../../errors";
-import { authMW } from "../auth";
-
-import { userService } from "./service";
 import { currentUserDto } from "./dto";
+import { userRepo } from "./repo";
 
 export const userRouter = setupController([
   [
@@ -12,7 +11,10 @@ export const userRouter = setupController([
     [
       authMW(),
       async function getMe(req, res) {
-        const userData = await userService.findById(getAuthData(res).userId);
+        const userData = await userRepo.findOneByKey(
+          "id",
+          getAuthData(res).userId,
+        );
 
         if (!userData)
           throw new AppError("Not found", HTTP_STATUS_CODE.NOT_FOUND);

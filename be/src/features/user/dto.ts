@@ -1,8 +1,8 @@
 import { omit } from "../../utils";
 
-import type { User } from "./models";
+import type { UserSelect } from "./types";
 
-export function currentUserDto(user: User) {
+export function currentUserDto(user: UserSelect) {
   return omit(user, ["password"]);
 }
 
