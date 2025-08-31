@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-import { HTTP_STATUS_CODE } from "../types";
-import { userRepo } from "../features/user";
+import { HTTP_STATUS_CODE } from "../types/http";
+import { userRepo } from "../features/user/repo";
 import { AppError } from "../errors";
 import config from "../config";
 

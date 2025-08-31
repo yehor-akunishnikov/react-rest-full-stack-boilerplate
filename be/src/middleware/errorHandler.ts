@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { z, ZodError } from "zod/v4";
 
-import { HTTP_STATUS_CODE } from "../types";
+import { HTTP_STATUS_CODE } from "../types/http";
 import { AppError } from "../errors";
 
 export function errorHandlerMW(

@@ -1,6 +1,6 @@
 import { Response } from "express";
 
-import { HTTP_STATUS_CODE } from "../types";
+import { HTTP_STATUS_CODE } from "../types/http";
 import { AppError } from "../errors";
 
 type ObjectKeysList<T extends object> = (keyof T)[];

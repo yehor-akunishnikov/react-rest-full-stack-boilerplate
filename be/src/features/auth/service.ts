@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 import { LoginPayload, RegisterPayload } from "./validators";
-import { userRepo } from "../user";
+import { userRepo } from "../user/repo";
 import config from "../../config";
 
 async function register(payload: RegisterPayload): Promise<void> {

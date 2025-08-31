@@ -1,4 +1,4 @@
-import type { HTTP_STATUS_CODE } from "../types";
+import type { HTTP_STATUS_CODE } from "../types/http";
 
 export class AppError implements Error {
   readonly name = "APP ERROR";

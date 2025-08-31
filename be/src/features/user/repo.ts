@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 
-import { handleQueryError, takeFirst } from "../../utils";
+import { handleQueryError, takeFirst } from "../../utils/common";
 import type { UserInsert, UserSelect } from "./types";
 import { User } from "./models";
 import { db } from "../../db";

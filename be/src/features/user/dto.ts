@@ -1,4 +1,4 @@
-import { omit } from "../../utils";
+import { omit } from "../../utils/common";
 
 import type { UserSelect } from "./types";
 

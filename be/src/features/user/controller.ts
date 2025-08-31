@@ -1,5 +1,6 @@
-import { HTTP_METHOD, HTTP_STATUS_CODE } from "../../types";
-import { getAuthData, setupController } from "../../utils";
+import { HTTP_METHOD, HTTP_STATUS_CODE } from "../../types/http";
+import { setupController } from "../../utils/controller";
+import { getAuthData } from "../../utils/common";
 import { authMW } from "../../middleware/auth";
 import { AppError } from "../../errors";
 import { currentUserDto } from "./dto";

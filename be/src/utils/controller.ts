@@ -1,6 +1,6 @@
 import { Handler, Router } from "express";
 
-import { Controller } from "../types";
+import { Controller } from "../types/controller";
 
 export type ControllerMiddlewares = Record<string, Handler[]>;
 

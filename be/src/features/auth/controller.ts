@@ -1,5 +1,5 @@
-import { HTTP_METHOD, HTTP_STATUS_CODE } from "../../types";
-import { setupController } from "../../utils";
+import { HTTP_METHOD, HTTP_STATUS_CODE } from "../../types/http";
+import { setupController } from "../../utils/controller";
 import { AppError } from "../../errors";
 
 import { loginValidator, registerValidator } from "./validators";
